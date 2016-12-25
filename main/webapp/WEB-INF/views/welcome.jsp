@@ -9,9 +9,11 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Success</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <h1>Welcome ${role}</h1>
+        <h4>You are welcome <i>${givenName}</i> </h4>
+        <h3>Meter ID : <i>${meterID}</i></h3>
     </body>
 </html>
