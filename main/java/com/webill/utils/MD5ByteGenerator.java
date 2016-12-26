@@ -23,7 +23,7 @@ public class MD5ByteGenerator {
      */
     public static String getMD5Bytes(String password) {
         
-        if(password == null) return null;
+        Validations.validateNotNull(password);
         
         try {
             byte[] md5SecreteBytes = MessageDigest.getInstance("MD5").digest(password.getBytes());

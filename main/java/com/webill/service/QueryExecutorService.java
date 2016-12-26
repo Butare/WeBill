@@ -5,6 +5,7 @@
  */
 package com.webill.service;
 
+import com.webill.utils.Validations;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -29,6 +30,8 @@ public class QueryExecutorService {
      */
     
     public ResultSet getQueryResult(String sqlQuery) throws ClassNotFoundException {
+        
+        Validations.validateNotNull(sqlQuery);
 
         ResultSet matchingQuery = null;
         try {
