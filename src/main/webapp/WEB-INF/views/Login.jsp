@@ -8,14 +8,15 @@
         <title>Login Page</title>
     </head>
     <body>
-        <h2>WeBill Login Page</h2>
-        <form action="/login.htm" method="post">
+        <h2>WeBill Login Page Great</h2>
+        <form action="login" method="post">
+            <h5> <font color="red">${errorMessage}</font> </h5>
             <table>
-                <tr><td>Username</td><td><input type="text" name="username"/></td></tr> 
-                <tr><td>Password</td> <td><input type="password" name="password"/></td></tr>  
-                <tr align="center">
-                    <td align="right"><input type="radio" name="userRole"/>Admin</td> 
-                    <td><input type="radio" name="userRole"/>Customer</td>
+                <tr><td>Username</td><td><input type="text" name="userName"/></td></tr> 
+                <tr><td>Password</td> <td><input type="password" name="passWord"/></td></tr>  
+                <tr> <td>Role</td>
+                    <td align="right"><input type="radio" name="userRole" value="Admin"/>Admin 
+                    <input type="radio" name="userRole" value="Customer"/>Customer</td>
                 </tr>
                 <tr align="center"><td><input type="submit" value="Login" /></td></tr>
             </table>
