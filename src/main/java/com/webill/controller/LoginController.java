@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,11 +44,11 @@ public class LoginController {
     @RequestMapping(value="/login", method= RequestMethod.POST)
     public String validateLoginPage(@RequestParam String userName, 
                                     @RequestParam String passWord, 
-                                    @RequestParam String userRole, 
+                                    @RequestBody String userRole, 
                                     ModelMap model) throws SQLException, ClassNotFoundException{
         
         model.put("role", userRole);
-        System.out.println("The passed role "+userRole);
+        //System.out.println("The passed role "+userRole.substring(10));
         
         String viewPage; 
         
