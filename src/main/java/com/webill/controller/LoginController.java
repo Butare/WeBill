@@ -5,70 +5,64 @@
  */
 package com.webill.controller;
 
+import com.webill.model.User;
 import com.webill.utils.MD5ByteGenerator;
 import com.webill.service.QueryExecutorService;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
  * @author JimmyHome
  */
 @Controller
-public class LoginController {
+public class LoginController{
     
     @Autowired
     QueryExecutorService queryExecutorService;
     
+ 
  @RequestMapping(value="/login", method = RequestMethod.GET) 
- public String getLoginPage(){
+ public String getLoginPage(Model model){
+     User user = new User();
+      
+     model.addAttribute("userLogin", user);
         return "Login"; 
    }
-    
-    /**
-     * @param userName a user name string
-     * @param passWord the password string
-     * @param userRole the role sting {@literal  Admin/Customer}
-     * @param model a view model
-     * @return the welcome view for successful login.
-     * @throws SQLException
-     * @throws ClassNotFoundException
-     */
-    @RequestMapping(value="/login", method= RequestMethod.POST)
-    public String validateLoginPage(@RequestParam String userName, 
-                                    @RequestParam String passWord, 
-                                    @RequestBody String userRole, 
-                                    ModelMap model) throws SQLException, ClassNotFoundException{
-        
-        model.put("role", userRole);
-        //System.out.println("The passed role "+userRole.substring(10));
-        
+ 
+ @RequestMapping(value="/login", method = RequestMethod.POST)
+ public String validateLoginPage(@ModelAttribute("userLogin") User user, Model model) throws ClassNotFoundException, SQLException{
+     
+        model.addAttribute("role", user.getUserRole());
+
         String viewPage; 
         
-        if (!userName.isEmpty() && !passWord.isEmpty() && !userRole.isEmpty()) {
+        if (!user.getUserID().isEmpty() && !user.getPassWord().isEmpty() && !user.getUserRole().isEmpty()) {
             
-            String idSecretMatchingQuery = "select * from Users where userID='"+userName+"'and "
-                    + "secret='"+MD5ByteGenerator.getMD5Bytes(passWord)+"'";
+            String idSecretMatchingQuery = "select * from Users where userID='"+user.getUserID()+"'and "
+                    + "secret='"+MD5ByteGenerator.getMD5Bytes(user.getPassWord())+"'";
             ResultSet rs = queryExecutorService.getQueryResult(idSecretMatchingQuery);
             if (rs.next()) {
-                model.put("givenName", rs.getString("givenName"));
-                model.put("meterID", rs.getString("meterID"));
+                model.addAttribute("givenName", rs.getString("givenName"));
+                model.addAttribute("meterID", rs.getString("meterID"));
                 viewPage = "welcome";
             } else {
-                model.put("errorMessage", "Incorrect username/password. Try again");
+                model.addAttribute("errorMessage", "Incorrect username/password. Try again");
                 viewPage = "Login";
             }
         } else{
-            model.put("errorMessage", "Please input all values. Try again");
+            model.addAttribute("errorMessage", "Please input all values. Try again");
             viewPage = "Login";
         }
         return viewPage;
-    }   
-}
+    } 
+     
+     
+ }
+    

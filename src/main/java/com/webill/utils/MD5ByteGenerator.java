@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class MD5ByteGenerator {
     
     /**
-     * @param password to convert into MD5 bytes
+     * @param password from user input
      * @return a converted string {@code String};
      *         {@code null} if empty string has passed 
      */
