@@ -5,17 +5,23 @@
  */
 package com.webill.controller;
 
+import com.webill.dao.JdbcDaoImpl;
 import com.webill.model.User;
-import com.webill.utils.MD5ByteGenerator;
-import com.webill.service.QueryExecutorService;
-import java.sql.ResultSet;
+import com.webill.pagevalidator.LoginFormValidation;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -25,8 +31,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class LoginController{
     
     @Autowired
-    QueryExecutorService queryExecutorService;
+    LoginFormValidation loginFormValidation;
     
+    @Autowired 
+    private JdbcDaoImpl jdbcDaoImpl;
  
  @RequestMapping(value="/login", method = RequestMethod.GET) 
  public String getLoginPage(Model model){
@@ -37,32 +45,41 @@ public class LoginController{
    }
  
  @RequestMapping(value="/login", method = RequestMethod.POST)
- public String validateLoginPage(@ModelAttribute("userLogin") User user, Model model) throws ClassNotFoundException, SQLException{
+ public String validateLoginPage(@Valid @ModelAttribute("userLogin") User user
+                  , BindingResult result, Model model, @RequestParam String userRole ) throws ClassNotFoundException, SQLException{
      
-        model.addAttribute("role", user.getUserRole());
-
-        String viewPage; 
         
-        if (!user.getUserID().isEmpty() && !user.getPassWord().isEmpty() && !user.getUserRole().isEmpty()) {
+     if(result.hasErrors()){
+         return "Login";
+     }
+     
+     String viewPage;
+     
+     if (!user.getUserID().isEmpty() && !user.getPassWord().isEmpty() && !user.getUserRole().isEmpty()) 
+     {
+     
+     List<Map<String, Object>> successUser = jdbcDaoImpl.getUser(user.getUserID(), user.getPassWord());
+        if (successUser != null && !successUser.isEmpty()) {
             
-            String idSecretMatchingQuery = "select * from Users where userID='"+user.getUserID()+"'and "
-                    + "secret='"+MD5ByteGenerator.getMD5Bytes(user.getPassWord())+"'";
-            ResultSet rs = queryExecutorService.getQueryResult(idSecretMatchingQuery);
-            if (rs.next()) {
-                model.addAttribute("givenName", rs.getString("givenName"));
-                model.addAttribute("meterID", rs.getString("meterID"));
+                Logger l = Logger.getLogger("Test");
+                l.log(Level.INFO, "The element successfully loged in.");
+            
+                model.addAttribute("role", successUser.get(0).get("userRole"));
+                model.addAttribute("givenName", successUser.get(0).get("givenName"));
+                model.addAttribute("meterID", successUser.get(0).get("meterID"));
                 viewPage = "welcome";
-            } else {
+
+        }else {
                 model.addAttribute("errorMessage", "Incorrect username/password. Try again");
                 viewPage = "Login";
             }
-        } else{
+     }else{
             model.addAttribute("errorMessage", "Please input all values. Try again");
             viewPage = "Login";
         }
-        return viewPage;
-    } 
      
-     
- }
+     return viewPage;
+
+    }      
+}
     

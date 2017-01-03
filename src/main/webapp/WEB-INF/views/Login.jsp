@@ -6,20 +6,45 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <style>
+            .error {
+                color: #ff0000;
+            }
+            
+            .errorblock {
+                color: #000;
+                background-color: #ffEEEE;
+                border: 3px solid #ff0000;
+                padding: 8px;
+                margin: 16px;      
+            }
+        </style>
+        
         <title>Login Page</title>
     </head>
     <body>
-        <h2>WeBill Login Page Great</h2>
+        <h2>WeBill Login Page</h2>
         <form:form commandName="userLogin" method="post">
+            <form:errors path="*" cssClass="errorblock" element="div" />
             <h5> <font color="red">${errorMessage}</font> </h5>
             <table>
-                <tr><td>Username</td><td><form:input path="userID"/></td></tr> 
-                <tr><td>Password</td> <td><form:password path="passWord" /></td></tr>  
+                <tr>
+                    <td>Username</td>
+                    <td><form:input path="userID"/></td>
+                    <td><form:errors path="userID" cssClass="error"/></td>
+                </tr> 
+                <tr>
+                    <td>Password</td> 
+                    <td><form:password path="passWord" /></td>
+                    <td><form:errors path="passWord" cssClass="error" /></td>
+                </tr>  
                 <tr> <td>Role</td>
                     <td align="right">
                         <form:radiobutton path="userRole" value="Admin"/>Admin 
                         <form:radiobutton path="userRole" value="Customer"/>Customer
                     </td>
+                    <td><form:errors path="userRole" cssClass="error" /></td>
                 </tr>
                 <tr align="center"><td><input type="submit" value="Login" /></td></tr>
             </table>
