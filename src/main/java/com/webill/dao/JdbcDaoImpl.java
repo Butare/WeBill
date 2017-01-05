@@ -5,6 +5,7 @@
  */
 package com.webill.dao;
 
+import com.webill.model.User;
 import com.webill.utils.MD5ByteGenerator;
 import java.util.List;
 import java.util.Map;
