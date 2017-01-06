@@ -9,21 +9,28 @@
         
     <context:component-scan base-package="com.webill"/> 
     
-    <bean id="validator" 
+    <bean id="loginValidator" 
           class="com.webill.pagevalidator.LoginFormValidation">
-    </bean>
+    </bean> 
     <!-- Register the message.properties -->
     <bean id="messageSource" 
           class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-          <property name="basename" value="/WEB-INF/messages"/>
+        <property name="basename" value="/WEB-INF/messages"/>
     </bean>
     
     <!-- DataSource configurations -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/WeBill"/>
-        <property name="username" value="webill"/>
-        <property name="password" value="itsme" />
+        <property name="driverClassName" value="${driverClassName}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}" />
+    </bean>
+    
+    <bean   id="databaseProperties" 
+            class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name ="location">
+            <value>classpath:database.properties</value>
+        </property>
     </bean>
     
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">

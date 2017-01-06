@@ -15,9 +15,9 @@
             .errorblock {
                 color: #000;
                 background-color: #ffEEEE;
-                border: 3px solid #ff0000;
-                padding: 8px;
-                margin: 16px;      
+                border: 2px solid #ff0000;
+                padding: 3px;
+                margin: 5px;      
             }
         </style>
         
@@ -26,25 +26,25 @@
     <body>
         <h2>WeBill Login Page</h2>
         <form:form commandName="userLogin" method="post">
-            <form:errors path="*" cssClass="errorblock" element="div" />
+           <!-- <form:errors path="*" cssClass="errorblock" element="div" />-->
             <h5> <font color="red">${errorMessage}</font> </h5>
             <table>
                 <tr>
                     <td>Username</td>
                     <td><form:input path="userID"/></td>
-                    <td><form:errors path="userID" cssClass="error"/></td>
+                    <td><form:errors path="userID" cssClass="errorblock"/></td>
                 </tr> 
                 <tr>
                     <td>Password</td> 
                     <td><form:password path="passWord" /></td>
-                    <td><form:errors path="passWord" cssClass="error" /></td>
+                    <td><form:errors path="passWord" cssClass="errorblock" /></td>
                 </tr>  
                 <tr> <td>Role</td>
                     <td align="right">
                         <form:radiobutton path="userRole" value="Admin"/>Admin 
                         <form:radiobutton path="userRole" value="Customer"/>Customer
                     </td>
-                    <td><form:errors path="userRole" cssClass="error" /></td>
+                    <td><form:errors path="userRole" cssClass="errorblock" /></td>
                 </tr>
                 <tr align="center"><td><input type="submit" value="Login" /></td></tr>
             </table>

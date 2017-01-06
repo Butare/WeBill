@@ -15,7 +15,7 @@ import org.springframework.validation.Validator;
  *
  * @author JimmyHome
  */
-@Service
+//@Service
 public class LoginFormValidation implements Validator{
 
     /*

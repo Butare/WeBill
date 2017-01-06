@@ -17,11 +17,11 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -45,14 +45,19 @@ public class LoginController{
    }
  
  @RequestMapping(value="/login", method = RequestMethod.POST)
- public String validateLoginPage(@Valid @ModelAttribute("userLogin") User user
+ public ModelAndView validateLoginPage(@Valid @ModelAttribute("userLogin") User user
                   , BindingResult result, Model model ) throws ClassNotFoundException, SQLException{
      
      Logger l = Logger.getLogger("Test");
      l.log(Level.INFO, "User Role :{0}", user.getUserRole());
      
+     ModelAndView mv;
+     
+     loginFormValidation.validate(user, result);
+     
      if(result.hasErrors()){
-         return "Login";
+         mv = new ModelAndView("Login");
+         return mv;
      }
      
      String viewPage;
@@ -70,20 +75,20 @@ public class LoginController{
                 model.addAttribute("role", userLogin.get("userRole"));
                 model.addAttribute("givenName", userLogin.get("givenName"));
                 model.addAttribute("meterID", userLogin.get("meterID"));
-                viewPage = "welcome";
+                mv = new ModelAndView("welcome");
                 
                 l.log(Level.INFO, "The user. {0} successfully loged in.", userLogin.get("givenName"));
 
         }else {
                 model.addAttribute("errorMessage", "Incorrect username/password. Try again");
-                viewPage = "Login";
+                mv = new ModelAndView("Login");
             }
      }else{
             model.addAttribute("errorMessage", "Please input all values. Try again");
-            viewPage = "Login";
+            mv = new ModelAndView("Login");
         }
      
-     return viewPage;
+     return mv;
 
     }      
 }
