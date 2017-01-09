@@ -60,15 +60,11 @@ public class LoginController{
          return mv;
      }
      
-     String viewPage;
-     
      if (!user.getUserID().isEmpty() && !user.getPassWord().isEmpty() && !user.getUserRole().isEmpty()) 
      {
      
      List<Map<String, Object>> successUser = jdbcDaoImpl.getUser(user.getUserID(), user.getPassWord());
         if (successUser != null && !successUser.isEmpty()) {
-            
-           // Logger l = Logger.getLogger("Test");
             
             Map<String, Object> userLogin = successUser.get(0);
             
