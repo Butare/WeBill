@@ -45,8 +45,9 @@ public class LoginController{
    }
  
  @RequestMapping(value="/login", method = RequestMethod.POST)
- public ModelAndView validateLoginPage(@Valid @ModelAttribute("userLogin") User user
-                  , BindingResult result, Model model ) throws ClassNotFoundException, SQLException{
+ public ModelAndView validateLoginPage(@Valid @ModelAttribute("userLogin") User user, 
+                                        BindingResult result, Model model ) 
+                                        throws ClassNotFoundException, SQLException{
      
      Logger l = Logger.getLogger("Test");
      l.log(Level.INFO, "User Role :{0}", user.getUserRole());
@@ -75,7 +76,7 @@ public class LoginController{
                 
                 l.log(Level.INFO, "The user. {0} successfully loged in.", userLogin.get("givenName"));
 
-        }else {
+        }else{
                 model.addAttribute("errorMessage", "Incorrect username/password. Try again");
                 mv = new ModelAndView("Login");
             }
