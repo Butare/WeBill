@@ -46,6 +46,7 @@
                     </td>
                     <td><form:errors path="userRole" cssClass="errorblock" /></td>
                 </tr>
+                <tr> <td> Greeting Message </td><td><input type="text" name="msgGreeting" /></td></tr>
                 <tr align="center"><td><input type="submit" value="Login" /></td></tr>
             </table>
         </form:form>
