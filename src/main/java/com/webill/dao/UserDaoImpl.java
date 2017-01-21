@@ -55,8 +55,16 @@ public class UserDaoImpl {
        for (Map<String, Object> userRow : allUsers) {
            User user = new User();
            user.setUserID((String) userRow.get("userID"));
-               
+           user.setGivenName((String) userRow.get("givenName"));
+           user.setSurName((String) userRow.get("surName"));
+           user.setLocationLatitude((String) userRow.get("locationLatitude"));
+           user.setLocationLongitude((String) userRow.get("locationLongitude"));
+           user.setMeterID((String) userRow.get("meterID"));
+           user.setAddress((String) userRow.get("address"));
+           
+           users.add(user); // add a user to the user list
        }
+       return users;
    }
    
     
