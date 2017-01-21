@@ -25,7 +25,7 @@
                 <tbody>
                     <c:forEach var="user" items="${userList}">
                         <tr>
-                            <td>${user.userId}</td> <td>${user.givenName}</td> <td>${user.surName}</td> <td>${user.address}</td><td>${user.email}</td> 
+                            <td>${user.userID}</td> <td>${user.givenName}</td> <td>${user.surName}</td> <td>${user.address}</td><td>${user.email}</td> 
                             <td>${user.meterID}</td><td>${user.locationLatitude}</td><td>${user.locationLongitude}</td>
                         </tr>
                     </c:forEach>
@@ -33,6 +33,8 @@
             </table>
               
               </c:if>
-        
+    <center>
+        <a href="addUser"> Add new User </a>
+    </center>
     </body>
 </html>
