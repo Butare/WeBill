@@ -96,7 +96,9 @@ public class LoginController{
                 mv = (user.getUserRole().equals(ADMIN_ROLE)) ? new ModelAndView("userList") : new ModelAndView("welcome");
                 
                 if (user.getUserRole().equals(ADMIN_ROLE)) {
-                    mv = new ModelAndView("userList"); 
+                    mv = new ModelAndView("userList");
+                    mv.addObject("userList", jdbcDaoImpl.getAllUser());
+                    
                 } else if (user.getUserRole().equals(CUSTOMER_ROLE)) {
                     mv = new ModelAndView("welcome");
                 }
