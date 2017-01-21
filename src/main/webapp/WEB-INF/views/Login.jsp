@@ -24,8 +24,8 @@
         <title>Login Page</title>
     </head>
     <body>
-        <h2>WeBill Login Page</h2>
-        <form:form commandName="userLogin" method="post">
+        <h1 align="center">WeBill Login Page</h1>
+        <form:form commandName="userLogin" method="post" >
            <!-- <form:errors path="*" cssClass="errorblock" element="div" />-->
             <h5> <font color="red">${errorMessage}</font> </h5>
             <table>
@@ -47,8 +47,11 @@
                     <td><form:errors path="userRole" cssClass="errorblock" /></td>
                 </tr>
                 <tr> <td> Greeting Message </td><td><input type="text" name="msgGreeting" /></td></tr>
-                <tr align="center"><td><input type="submit" value="Login" /></td></tr>
             </table>
+            <center>
+                <input type="submit" value="Login" style="height:30px; width:100px"/>
+            </center>
+            
         </form:form>
     </body>
 </html>

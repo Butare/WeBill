@@ -8,6 +8,8 @@ package com.webill.controller;
 import com.webill.dao.UserDaoImpl;
 import com.webill.model.User;
 import com.webill.pagevalidator.LoginFormValidation;
+import static com.webill.utils.Constants.ADMIN_ROLE;
+import static com.webill.utils.Constants.CUSTOMER_ROLE;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +59,13 @@ public class LoginController{
      Logger l = Logger.getLogger("Test");
      l.log(Level.INFO, "User Role :{0}", user.getUserRole());
     
+     // model data
+     Map modelM = model.asMap();
+     for (Object modelKey : modelM.keySet()) {
+         Object modelValue = modelM.get(modelKey);
+         System.out.println(modelKey +"  :Model key and values are: "+ modelValue);
+     }
+     
      
      ModelAndView mv;
      
@@ -70,7 +79,7 @@ public class LoginController{
      if (!user.getUserID().isEmpty() && !user.getPassWord().isEmpty() && !user.getUserRole().isEmpty()) 
      {
      
-     List<Map<String, Object>> successUser = jdbcDaoImpl.getUser(user.getUserID(), user.getPassWord());
+     List<Map<String, Object>> successUser = jdbcDaoImpl.getUser(user.getUserID(), user.getPassWord(), user.getUserRole());
         if (successUser != null && !successUser.isEmpty()) {
             
             Map<String, Object> userLogin = successUser.get(0);
@@ -84,7 +93,13 @@ public class LoginController{
                 model.addAttribute("givenName", userLogin.get("givenName"));
                 model.addAttribute("meterID", userLogin.get("meterID"));
                 
-                mv = new ModelAndView("welcome");
+                mv = (user.getUserRole().equals(ADMIN_ROLE)) ? new ModelAndView("userList") : new ModelAndView("welcome");
+                
+                if (user.getUserRole().equals(ADMIN_ROLE)) {
+                    mv = new ModelAndView("userList"); 
+                } else if (user.getUserRole().equals(CUSTOMER_ROLE)) {
+                    mv = new ModelAndView("welcome");
+                }
                 
                 l.log(Level.INFO, "The user. {0} successfully loged in.", userLogin.get("givenName"));
 
