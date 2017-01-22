@@ -80,12 +80,42 @@ public class UserDaoImpl implements UserDao{
 
     @Override
     public void saveOrUpdate(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        if (getUserById(user.getUserID()) != null) {
+            String sql = "UPDATE users set surName=?, givenName=?, secret=?, userRole=?, email=?,"
+                    + "meterID=?, locationLongitude=?, locationLatitude=? where userID=?";
+            jdbcTemplate.update(sql, user.getSurName(), user.getGivenName(), MD5ByteGenerator.getMD5Bytes(user.getPassWord()), 
+                    user.getUserRole(), user.getEmail(), user.getMeterID(), user.getLocationLongitude(), 
+                    user.getLocationLatitude(), user.getUserID());
+            
+        } else {
+            String sql = "INSERT INTO users (userID, surName, givenName, secret, userRole,"
+                    + "email, meterID, locationLongitude, locationLatitude) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            jdbcTemplate.update(sql, user.getUserID(), user.getSurName(), user.getGivenName(), MD5ByteGenerator.getMD5Bytes(user.getPassWord()), 
+                    user.getUserRole(), user.getEmail(), user.getMeterID(), user.getLocationLongitude(), 
+                    user.getLocationLatitude());
+        }
     }
 
     @Override
     public User getUserById(String userID) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         String query = "select * from users where userID='"+userID+"'";
+         
+         final List<Map<String, Object>> allUsers = jdbcTemplate.queryForList(query);
+       
+       for (Map<String, Object> userRow : allUsers) {
+           User user = new User();
+           user.setUserID((String) userRow.get("userID"));
+           user.setGivenName((String) userRow.get("givenName"));
+           user.setSurName((String) userRow.get("surName"));
+           user.setLocationLatitude((String) userRow.get("locationLatitude"));
+           user.setLocationLongitude((String) userRow.get("locationLongitude"));
+           user.setMeterID((String) userRow.get("meterID"));
+           user.setAddress((String) userRow.get("address"));
+           
+           return user; // add a user to the user list
+       }
+       return null;
     }
     
 }
