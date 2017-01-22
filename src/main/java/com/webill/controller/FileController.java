@@ -24,11 +24,10 @@ import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
 import org.apache.sanselan.formats.tiff.TiffImageMetadata;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -37,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author JimmyHome
  */
 @Controller
+@SessionAttributes("imageName")
 public class FileController {
 
     @RequestMapping(value = "/fileUpload", method = RequestMethod.POST)
@@ -65,6 +65,7 @@ public class FileController {
             
             // add photo name to the session
             model.addAttribute("imageName", file.getOriginalFilename());
+            
             
             fileContent.close();
             outFile.close();
