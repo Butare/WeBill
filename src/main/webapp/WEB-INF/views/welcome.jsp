@@ -13,8 +13,7 @@
     </head>
     <body>
         <form method = "POST" action="fileUpload" enctype="multipart/form-data">
-            <h3>${msgGreeting}</h3>
-        <h1>Session success name: ${successName}</h1>
+        <h1>Your name is : ${userName}</h1>
         <h1>Welcome ${role}</h1>
         <h4>You are welcome <i>${givenName}</i> </h4>
         <h3>Meter ID : <i>${meterID}</i></h3>

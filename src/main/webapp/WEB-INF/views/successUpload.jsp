@@ -14,7 +14,7 @@
     <body>
         <form action="readQrCode" method="post" > 
         <h1>Image information : ${stringOutput}</h1>
-        <h2>The image name is: <input type="text"  name="imageName" value="${imageName}"/> </h2>
+        <!--<h2>The image name is: <input type="text"  name="imageName" value="${imageName}"/> </h2>-->
         <input type="submit" value="Scan QR Code" />
         </form>
     </body>

@@ -24,7 +24,18 @@
         <property name="url" value="${url}"/>
         <property name="username" value="${username}"/>
         <property name="password" value="${password}" />
+   
     </bean>
+      <!-- jdbcTemplate bean, refers to the dataSource-->  
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    
+    <bean id="userDaoImpl" class="com.webill.daoImpl.UserDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
     
     <bean   id="databaseProperties" 
             class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

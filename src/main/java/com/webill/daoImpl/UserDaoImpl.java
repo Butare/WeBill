@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.webill.dao;
+package com.webill.daoImpl;
 
+import com.webill.daoApi.UserDao;
 import com.webill.model.User;
 import static com.webill.utils.Constants.ADMIN_ROLE;
 import static com.webill.utils.Constants.CUSTOMER_ROLE;
@@ -12,25 +13,31 @@ import com.webill.utils.MD5ByteGenerator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
 
 /**
  *
  * @author JimmyHome
  */
-@Component
-public class UserDaoImpl {
-    
-    
-    private DataSource dataSource;
 
-    private JdbcTemplate  jdbcTemplate = new JdbcTemplate();
-
+public class UserDaoImpl implements UserDao{
     
-   public List<Map<String, Object>> getUser(String userID, String password, String userRole){
+
+    @Autowired
+    private JdbcTemplate  jdbcTemplate;
+
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
+    }
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+   
+   @Override
+   public List<Map<String, Object>> getUserLogin(String userID, String password, String userRole){
        
        List<Map<String, Object>> foundUser = null ;
        
@@ -47,7 +54,8 @@ public class UserDaoImpl {
        return foundUser;
    }
    
-   public List<User> getAllUser() {
+   @Override
+   public List<User> getUserList() {
        final String userListQuery = "select * from Users";
        final List<User> users = new ArrayList<>();
        final List<Map<String, Object>> allUsers = jdbcTemplate.queryForList(userListQuery);
@@ -68,27 +76,16 @@ public class UserDaoImpl {
    }
    
     
-    
-    public int getUserCount() {
-        String sql = "SELECT COUNT(*) FROM Users";
-        return jdbcTemplate.queryForObject(sql, Integer.class);
-    }
-    
-    public DataSource getDataSource() {
-        return dataSource;
+
+
+    @Override
+    public void saveOrUpdate(User user) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-    
-    public JdbcTemplate getJdbcTemplate() {
-        return jdbcTemplate;
-    }
-
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    @Override
+    public User getUserById(String userID) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
