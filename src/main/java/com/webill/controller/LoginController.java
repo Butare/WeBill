@@ -64,7 +64,7 @@ public class LoginController{
      }
      
      
-     ModelAndView mv;
+     ModelAndView mv = null;
      
      loginFormValidation.validate(user, result);
      
@@ -88,8 +88,6 @@ public class LoginController{
                 model.addAttribute("role", userLogin.get("userRole"));
                 model.addAttribute("givenName", userLogin.get("givenName"));
                 model.addAttribute("meterID", userLogin.get("meterID"));
-                
-                mv = (user.getUserRole().equals(ADMIN_ROLE)) ? new ModelAndView("userList") : new ModelAndView("welcome");
                 
                 if (user.getUserRole().equals(ADMIN_ROLE)) {
                     mv = new ModelAndView("userList");
