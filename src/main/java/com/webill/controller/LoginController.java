@@ -5,7 +5,7 @@
  */
 package com.webill.controller;
 
-import com.webill.dao.UserDaoImpl;
+import com.webill.daoApi.UserDao;
 import com.webill.model.User;
 import com.webill.pagevalidator.LoginFormValidation;
 import static com.webill.utils.Constants.ADMIN_ROLE;
@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,7 +23,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -34,14 +31,14 @@ import org.springframework.web.servlet.ModelAndView;
  * @author JimmyHome
  */
 @Controller
-@SessionAttributes("userLogin")
+@SessionAttributes("userName")
 public class LoginController{
     
     @Autowired
     LoginFormValidation loginFormValidation;
     
     @Autowired 
-    private UserDaoImpl jdbcDaoImpl;
+    private UserDao jdbcDao;
  
  @RequestMapping(value="/login", method = RequestMethod.GET) 
  public String getLoginPage(Model model){
@@ -53,7 +50,7 @@ public class LoginController{
  
  @RequestMapping(value="/login", method = RequestMethod.POST)
  public ModelAndView validateLoginPage(@Valid @ModelAttribute("userLogin") User user, 
-                                        BindingResult result, Model model, @RequestParam String msgGreeting ) 
+                                        BindingResult result, Model model) 
                                         throws ClassNotFoundException, SQLException{
      
      Logger l = Logger.getLogger("Test");
@@ -79,14 +76,13 @@ public class LoginController{
      if (!user.getUserID().isEmpty() && !user.getPassWord().isEmpty() && !user.getUserRole().isEmpty()) 
      {
      
-     List<Map<String, Object>> successUser = jdbcDaoImpl.getUser(user.getUserID(), user.getPassWord(), user.getUserRole());
+     List<Map<String, Object>> successUser = jdbcDao.getUserLogin(user.getUserID(), user.getPassWord(), user.getUserRole());
         if (successUser != null && !successUser.isEmpty()) {
             
             Map<String, Object> userLogin = successUser.get(0);
                 
                 // session 
-                model.addAttribute("successName", user.getUserID());
-                model.addAttribute("msgGreeting", msgGreeting);
+                model.addAttribute("userName", user.getUserID());
                 
                 // model attribute
                 model.addAttribute("role", userLogin.get("userRole"));
@@ -97,7 +93,7 @@ public class LoginController{
                 
                 if (user.getUserRole().equals(ADMIN_ROLE)) {
                     mv = new ModelAndView("userList");
-                    mv.addObject("userList", jdbcDaoImpl.getAllUser());
+                    mv.addObject("userList", jdbcDao.getUserList());
                     
                 } else if (user.getUserRole().equals(CUSTOMER_ROLE)) {
                     mv = new ModelAndView("welcome");
