@@ -20,9 +20,9 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -31,17 +31,18 @@ import org.springframework.web.bind.annotation.SessionAttributes;
  * @author JimmyHome
  */
 @Controller
-@SessionAttributes("userLogin")
+@SessionAttributes("imageName")
 public class QrReaderController {
     
     @RequestMapping(value ="/readQrCode" , method = RequestMethod.POST)
     @ResponseBody
-    public String getQrCode (HttpServletRequest request, @RequestParam String imageName) throws NotFoundException{
+    public String getQrCode (HttpServletRequest request, @ModelAttribute("imageName") String imageName) throws NotFoundException{
          File imageFile = new File(request.getSession().
                     getServletContext().getRealPath(Constants.UPLOAD_DIRECTORY) + "/_" + imageName);
          BufferedImage bufImage;
          BinaryBitmap bitMap;
          Result result;
+         
          
          String stringOutput = null;
          
