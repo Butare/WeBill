@@ -17,8 +17,8 @@ public interface UserDao {
     public void saveOrUpdate(User user);
     public User getUserById(String userID);
     public List<User> getUserList();
-    
     public List<Map<String,Object>> getUserLogin(String userID, String password, String userRole);
-    
-    
+    public void createUserTable( String userID);
+    public boolean isGpsInformationExist(double longitude, double latitude);
+    public void addGpsInformation(String userID, double longitude, double latitude);
 }
