@@ -31,7 +31,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author JimmyHome
  */
 @Controller
-@SessionAttributes("userName")
+@SessionAttributes({"userName"})
 public class LoginController{
     
     @Autowired
@@ -75,7 +75,7 @@ public class LoginController{
      
      if (!user.getUserID().isEmpty() && !user.getPassWord().isEmpty() && !user.getUserRole().isEmpty()) 
      {
-     
+
      List<Map<String, Object>> successUser = jdbcDao.getUserLogin(user.getUserID(), user.getPassWord(), user.getUserRole());
         if (successUser != null && !successUser.isEmpty()) {
             
@@ -83,6 +83,7 @@ public class LoginController{
                 
                 // session 
                 model.addAttribute("userName", user.getUserID());
+                //model.addAttribute("userID", USER)
                 
                 // model attribute
                 model.addAttribute("role", userLogin.get("userRole"));
@@ -90,8 +91,9 @@ public class LoginController{
                 model.addAttribute("meterID", userLogin.get("meterID"));
                 
                 if (user.getUserRole().equals(ADMIN_ROLE)) {
-                    mv = new ModelAndView("userList");
+                    mv = new ModelAndView("/userList");
                     mv.addObject("userList", jdbcDao.getUserList());
+
                     
                 } else if (user.getUserRole().equals(CUSTOMER_ROLE)) {
                     mv = new ModelAndView("welcome");
