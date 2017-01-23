@@ -5,6 +5,8 @@
  */
 package com.webill.controller;
 
+import com.webill.daoApi.UserDao;
+import com.webill.model.User;
 import com.webill.utils.Constants;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,8 +24,10 @@ import org.apache.sanselan.Sanselan;
 import org.apache.sanselan.common.IImageMetadata;
 import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
 import org.apache.sanselan.formats.tiff.TiffImageMetadata;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,15 +43,18 @@ import org.springframework.web.servlet.ModelAndView;
 @SessionAttributes("imageName")
 public class FileController {
 
+    @Autowired
+    private UserDao jdbcDao;
+
     @RequestMapping(value = "/fileUpload", method = RequestMethod.POST)
-   // @ResponseBody
+    // @ResponseBody
     public ModelAndView getFileUploaded(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam("file") MultipartFile file, Model model) throws IOException, ServletException {
+            @RequestParam("file") MultipartFile file, Model model, @RequestParam("userID") String userID) throws IOException, ServletException {
 
         response.setContentType("text/html;charset=UTF-8");
 
         ModelAndView modelView = null;
-        
+
         if (ServletFileUpload.isMultipartContent(request)) {
 
             OutputStream outFile;
@@ -62,11 +69,10 @@ public class FileController {
             while ((read = fileContent.read(bytes)) != -1) {
                 outFile.write(bytes, 0, read);
             }
-            
+
             // add photo name to the session
             model.addAttribute("imageName", file.getOriginalFilename());
-            
-            
+
             fileContent.close();
             outFile.close();
 
@@ -91,6 +97,14 @@ public class FileController {
                                 stringOutput = "GPS Description: " + gpsDescription
                                         + "Longitude (Degrees East):" + longitude
                                         + "Latitude (Degrees North):" + latitude;
+
+                                if (jdbcDao.isGpsInformationExist(longitude, latitude)) {
+                                    // check qr code after sports
+                                    System.out.println("IN GPS USER NAME ID :" + userID);
+                                } else {
+                                    jdbcDao.addGpsInformation(userID, longitude, latitude);
+                                }
+
                             }
                         } else {
                             stringOutput = "No GPS data!";
@@ -105,14 +119,13 @@ public class FileController {
             } catch (ImageReadException ex) {
                 Logger.getLogger(FileController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            
+
             model.addAttribute("stringOutput", stringOutput);
 
         } else {
             model.addAttribute("errorUpload", "Error: form type must be multipart/form");
         }
-            modelView = new ModelAndView("successUpload");
-            return modelView;
+        modelView = new ModelAndView("successUpload");
+        return modelView;
     }
 }
