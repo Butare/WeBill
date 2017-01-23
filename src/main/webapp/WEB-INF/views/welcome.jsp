@@ -17,7 +17,7 @@
         <h1>Welcome ${role}</h1>
         <h4>You are welcome <i>${givenName}</i> </h4>
         <h3>Meter ID : <i>${meterID}</i></h3>
-        
+        <input type="hidden" name="userID" value="${userName}"/>
          Select a file upload:<input type="file" name="file" id="file" accept="image/*"> <br>
         <input type="submit" value="Upload" name="upload" id="upload"/>
         </form>

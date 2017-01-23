@@ -9,6 +9,7 @@ package com.webill.model;
  *
  * @author JimmyHome
  */
+
 public class User {
     
     private String userID;

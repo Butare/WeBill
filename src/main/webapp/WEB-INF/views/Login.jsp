@@ -25,7 +25,7 @@
     </head>
     <body>
         <h1 align="center">WeBill Login Page</h1>
-        <form:form commandName="userLogin" method="post" >
+        <form:form modelAttribute="userLogin" method="post"  action="login">
            <!-- <form:errors path="*" cssClass="errorblock" element="div" />-->
             <h5> <font color="red">${errorMessage}</font> </h5>
             <table>

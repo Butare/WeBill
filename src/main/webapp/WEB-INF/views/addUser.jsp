@@ -24,7 +24,7 @@
     </head>
     <body>
         <h1>Add new User </h1>
-        <form:form commandName="addUser" method="post">
+        <form:form modelAttribute="userForm" action="addUser" method="post">
             <table>
                 <tr>
                     <td>User ID</td> <td><form:input path="userID" /></td>

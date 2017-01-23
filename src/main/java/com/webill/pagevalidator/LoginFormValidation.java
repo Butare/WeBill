@@ -27,12 +27,20 @@ public class LoginFormValidation implements Validator{
         return User.class.equals(clazz);
     }
 
+    @Override
     public void validate(Object obj, Errors errors) {
        User user = (User) obj;
        
        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userID", "userLogin.userID");
        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passWord", "userLogin.passWord");
        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userRole", "userLogin.userRole");
+//       
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "givenName", "addUser.givenName");
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "surName", "addUser.surName");
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "address", "addUser.address");
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "addUser.email");
+//        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "meterID", "addUser.meterID");
+       
     }
     
 }
