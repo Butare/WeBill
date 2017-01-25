@@ -6,6 +6,7 @@
 package com.webill.daoImpl;
 
 import com.webill.daoApi.UserDao;
+import com.webill.model.ImageDetail;
 import com.webill.model.User;
 import static com.webill.utils.Constants.ADMIN_ROLE;
 import static com.webill.utils.Constants.CUSTOMER_ROLE;
@@ -114,7 +115,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void createUserTable(String userID) {
-        
+
         if (getUserById(userID) != null) { // check if the userID is available
             String sql = "CREATE TABLE IF NOT EXISTS WeBill." + userID + " (month INT, meterReading INT, consumption INT, meterImageName varchar(45), billFileName varchar(45))";
             jdbcTemplate.execute(sql);
@@ -123,10 +124,10 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean isGpsInformationExist(double longitude, double latitude) {
-        String sql = "select * from users where locationLongitude='"+longitude+"' and locationLatitude='"+latitude+"'";
-        
+        String sql = "select * from users where locationLongitude='" + longitude + "' and locationLatitude='" + latitude + "'";
+
         List<Map<String, Object>> gpsInfo = jdbcTemplate.queryForList(sql);
-        
+
         return !gpsInfo.isEmpty();
     }
 
@@ -134,6 +135,45 @@ public class UserDaoImpl implements UserDao {
     public void addGpsInformation(String userID, double longitude, double latitude) {
         String sql = "UPDATE USERS set locationLongitude=?,locationLatitude=? where userID=?";
         jdbcTemplate.update(sql, longitude, latitude, userID);
+    }
+
+    @Override
+    public boolean isQRCodeExist(String qrCode) {
+        String sql = "SELECT * FROM users where meterID=?";
+        List<Map<String, Object>> qrUser = jdbcTemplate.queryForList(sql, qrCode);
+
+        return !qrUser.isEmpty();
+    }
+
+    @Override
+    public void insertImageDetails(String userID, String imageName) {
+
+        String sql = "INSERT INTO " + userID + "(month, meterReading, consumption, meterImageName, billFileName) values(0, 0, 0, '" + imageName + "', '')";
+
+        jdbcTemplate.execute(sql);
+
+    }
+
+    @Override
+    public List<ImageDetail> getImageDetailByUser(String userID) {
+
+        String sql = "SELECT * FROM " + userID;
+
+        final List<ImageDetail> details = new ArrayList<>();
+        final List<Map<String, Object>> allDetails = jdbcTemplate.queryForList(sql);
+
+        for (Map<String, Object> detailRow : allDetails) {
+            ImageDetail detail = new ImageDetail();
+            detail.setMonth((int) detailRow.get("month"));
+            detail.setMeterReading((int) detailRow.get("meterReading"));
+            detail.setConsumption((int) detailRow.get("consumption"));
+            detail.setMeterImageName((String) detailRow.get("meterImageName"));
+            detail.setBillFileName((String) detailRow.get("billFileName"));
+
+            details.add(detail); // add an image details to an image details list
+        }
+        return details;
+
     }
 
 }
