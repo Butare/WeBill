@@ -23,7 +23,7 @@ public class User {
     private String locationLongitude;
     private String locationLatitude;
        
-  
+    
     public String getUserID() {
         return userID;
     }
