@@ -5,9 +5,11 @@
  */
 package com.webill.controller;
 
+import com.google.zxing.NotFoundException;
 import com.webill.daoApi.UserDao;
 import com.webill.model.User;
 import com.webill.utils.Constants;
+import com.webill.utils.QrReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,7 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author JimmyHome
  */
 @Controller
-@SessionAttributes("imageName")
+@SessionAttributes({"imageName", "userID"})
 public class FileController {
 
     @Autowired
@@ -49,7 +51,7 @@ public class FileController {
     @RequestMapping(value = "/fileUpload", method = RequestMethod.POST)
     // @ResponseBody
     public ModelAndView getFileUploaded(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam("file") MultipartFile file, Model model, @RequestParam("userID") String userID) throws IOException, ServletException {
+            @RequestParam("file") MultipartFile file, Model model, @RequestParam("userID") String userID) throws IOException, ServletException, NotFoundException {
 
         response.setContentType("text/html;charset=UTF-8");
 
@@ -60,8 +62,12 @@ public class FileController {
             OutputStream outFile;
             InputStream fileContent;
 
+            String stringOutput = null; // text for updloaded image details
+            String gpsFound = null;     // message for found or not found gps information.
+            String meterIDFound = null; // message for found or not found meter no.
+
             outFile = new FileOutputStream(new File(request.getSession().
-                    getServletContext().getRealPath(Constants.UPLOAD_DIRECTORY) + "/_" + file.getOriginalFilename()));
+                    getServletContext().getRealPath(Constants.UPLOAD_DIRECTORY) + "/_" + userID + "_" + file.getOriginalFilename()));
 
             fileContent = file.getInputStream();
             int read;
@@ -70,18 +76,38 @@ public class FileController {
                 outFile.write(bytes, 0, read);
             }
 
+//            try { // please remember to remove this block !!!!!!!!!!!
+//
+//                if (jdbcDao.isQRCodeExist(QrReader.getQrCode(request, file.getOriginalFilename(), userID))) {
+//                    meterIDFound="THE QR CODE: " + QrReader.getQrCode(request, file.getOriginalFilename(), userID) +" Already in DB";
+//                }
+//            } catch (NotFoundException ex) {
+//                // when the image has no QR Code can't scan the gps coordinates
+//                System.out.println("QR CODE NOT FOUND");
+//                Logger.getLogger(FileController.class.getName()).log(Level.SEVERE, null, ex);
+//            }
             // add photo name to the session
             model.addAttribute("imageName", file.getOriginalFilename());
+            model.addAttribute("userID", userID);
 
             fileContent.close();
             outFile.close();
 
-            String stringOutput = null;
-
             File imageFile = new File(request.getSession().
-                    getServletContext().getRealPath(Constants.UPLOAD_DIRECTORY) + "/_" + file.getOriginalFilename());
-
+                    getServletContext().getRealPath(Constants.UPLOAD_DIRECTORY) + "/_" + userID + "_" + file.getOriginalFilename());
+            
             try {
+//                try{
+                if (jdbcDao.isQRCodeExist(QrReader.getQrCode(request, file.getOriginalFilename(), userID))) {
+                    meterIDFound = "THE QR CODE: " + QrReader.getQrCode(request, file.getOriginalFilename(), userID) + " Already in DB";
+                    jdbcDao.insertImageDetails(userID, file.getOriginalFilename());
+                } else {
+                    meterIDFound = " No QR READS";
+                }
+                //               }catch(NotFoundException ex){
+//                    meterIDFound = "No QR Reads";
+//                }
+
                 if (Sanselan.getMetadata(imageFile) != null) {
                     final IImageMetadata metadata = (IImageMetadata) Sanselan.getMetadata(imageFile);
                     final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
@@ -94,15 +120,28 @@ public class FileController {
                                 final double longitude = gpsInfo.getLongitudeAsDegreesEast();
                                 final double latitude = gpsInfo.getLatitudeAsDegreesNorth();
 
-                                stringOutput = "GPS Description: " + gpsDescription
-                                        + "Longitude (Degrees East):" + longitude
-                                        + "Latitude (Degrees North):" + latitude;
-
                                 if (jdbcDao.isGpsInformationExist(longitude, latitude)) {
-                                    // check qr code after sports
-                                    System.out.println("IN GPS USER NAME ID :" + userID);
+
+                                    String gpsCord = "GPS Description: " + gpsDescription
+                                            + "Longitude (Degrees East):" + longitude
+                                            + "Latitude (Degrees North):" + latitude + " and the Found in DB";
+                                    stringOutput = gpsCord;
+                                    // try{
+                                    if (jdbcDao.isQRCodeExist(QrReader.getQrCode(request, file.getOriginalFilename(), userID))) {
+                                        meterIDFound = "QR Reads :" + QrReader.getQrCode(request, file.getOriginalFilename(), userID);
+                                    } else {
+                                        meterIDFound = "No QR Reads";
+                                    }
+//                                    }catch(NotFoundException ex){
+//                                        meterIDFound = "NO QR READS AT EXCEPTION";
+//                                    }
+
                                 } else {
+                                    // if not found then add gps information
                                     jdbcDao.addGpsInformation(userID, longitude, latitude);
+
+                                    stringOutput = "The Longitude(Degrees East): " + longitude
+                                            + " and The Latitude" + latitude + " successfully added";
                                 }
 
                             }
@@ -121,6 +160,7 @@ public class FileController {
             }
 
             model.addAttribute("stringOutput", stringOutput);
+            model.addAttribute("meterIDFound", meterIDFound);
 
         } else {
             model.addAttribute("errorUpload", "Error: form type must be multipart/form");
@@ -128,4 +168,6 @@ public class FileController {
         modelView = new ModelAndView("successUpload");
         return modelView;
     }
+  
+    
 }
