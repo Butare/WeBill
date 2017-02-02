@@ -101,6 +101,8 @@ public class UserDaoImpl implements UserDao {
         for (Map<String, Object> userRow : allUsers) {
             User user = new User();
             user.setUserID((String) userRow.get("userID"));
+            user.setUserRole((String) userRow.get("userRole"));
+            user.setEmail((String) userRow.get("email"));
             user.setGivenName((String) userRow.get("givenName"));
             user.setSurName((String) userRow.get("surName"));
             user.setLocationLatitude((String) userRow.get("locationLatitude"));
@@ -117,7 +119,7 @@ public class UserDaoImpl implements UserDao {
     public void createUserTable(String userID) {
 
         if (getUserById(userID) != null) { // check if the userID is available
-            String sql = "CREATE TABLE IF NOT EXISTS WeBill." + userID + " (month INT, meterReading INT, consumption INT, meterImageName varchar(45), billFileName varchar(45))";
+            String sql = "CREATE TABLE WeBill." + userID + " (month INT, meterReading INT, consumption INT, meterImageName varchar(45), billFileName varchar(45))";
             jdbcTemplate.execute(sql);
         }
     }
@@ -148,7 +150,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insertImageDetails(String userID, String imageName) {
 
-        String sql = "INSERT INTO " + userID + "(month, meterReading, consumption, meterImageName, billFileName) values(0, 0, 0, '" + imageName + "', '')";
+        String sql = "INSERT INTO " + userID + "(month, meterReading, consumption, meterImageName, billFileName) values(0, 0, 0, '_" + userID + "_" + imageName + "', '')";
 
         jdbcTemplate.execute(sql);
 
