@@ -8,6 +8,7 @@ package com.webill.controller;
 import com.webill.daoApi.UserDao;
 import com.webill.model.User;
 import com.webill.pagevalidator.LoginFormValidation;
+import com.webill.utils.Constants;
 import static com.webill.utils.Constants.ADMIN_ROLE;
 import static com.webill.utils.Constants.CUSTOMER_ROLE;
 import java.sql.SQLException;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,7 +52,7 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ModelAndView validateLoginPage(@Valid @ModelAttribute("userLogin") User user,
+    public ModelAndView validateLoginPage(HttpServletRequest request, @Valid @ModelAttribute("userLogin") User user,
             BindingResult result, Model model)
             throws ClassNotFoundException, SQLException {
 
@@ -68,6 +71,7 @@ public class LoginController {
         loginFormValidation.validate(user, result);
 
         if (result.hasErrors()) {
+            model.addAttribute("errorMessage", "Got form errors. Try again");
             mv = new ModelAndView("Login");
             return mv;
         }
@@ -84,8 +88,6 @@ public class LoginController {
                 //model.addAttribute("userID", USER)
 
                 // model attribute
-                model.addAttribute("role", userLogin.get("userRole"));
-                model.addAttribute("givenName", userLogin.get("givenName"));
                 model.addAttribute("meterID", userLogin.get("meterID"));
 
                 if (user.getUserRole().equals(ADMIN_ROLE)) {
@@ -93,8 +95,8 @@ public class LoginController {
                     mv.addObject("userList", jdbcDao.getUserList());
 
                 } else if (user.getUserRole().equals(CUSTOMER_ROLE)) {
-                    mv = new ModelAndView(showUploaded(user.getUserID(), model));
-                    
+                    mv = new ModelAndView(showUploaded(request, user.getUserID(), model));
+
                     //redirect error check.
                 }
 
@@ -113,12 +115,46 @@ public class LoginController {
 
     }
 
-    @RequestMapping(value = "/showUploaded", method = RequestMethod.POST)
-    public String showUploaded(String userID, Model model) {
-        
-         model.addAttribute("listImageDetails", jdbcDao.getImageDetailByUser(userID));
+    @RequestMapping(value = "/showUploaded", method = RequestMethod.GET)
+    public String showUploaded(HttpServletRequest request, @ModelAttribute("userName") String userID, Model model) {
 
+        User user = jdbcDao.getUserById(userID);
+
+        model.addAttribute("userName", user.getUserID());
+        model.addAttribute("role", user.getUserRole());
+
+        System.out.println("The role in show uploded is : " + user.getEmail());
+        model.addAttribute("listImageDetails", jdbcDao.getImageDetailByUser(userID));
+       
+        model.addAttribute("fullPath", request.getSession().
+                getServletContext().getRealPath(Constants.UPLOAD_DIRECTORY));
+       
+        //try to add thumbnail details into a model. !!!
         return "imageDetails";
+
+    }
+
+    @RequestMapping(value = "/uploadImage", method = RequestMethod.GET)
+    public String showUploadPage(HttpServletRequest request, @ModelAttribute("userName") String userID, Model model) {
+
+        User user = jdbcDao.getUserById(userID);
+
+        model.addAttribute("role", user.getUserRole());
+        model.addAttribute("givenName", user.getGivenName());
+        model.addAttribute("meterID", user.getMeterID());
+
+        return "uploadImage";
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logoutUser(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return getLoginPage(model);
 
     }
 }
