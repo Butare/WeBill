@@ -20,9 +20,17 @@
                 padding: 3px;
                 margin: 5px;      
             }
+                    .right {
+            position: absolute;
+            right: 5px;
+            width: 90px;
+            border: 3px solid #73AD21;
+            padding: 5px;
+        }
         </style>
     </head>
     <body>
+        <p class="right"> <a href="logout">Logout</a> </p>
         <h1>Add new User </h1>
         <form:form modelAttribute="userForm" action="addUser" method="post">
             <table>

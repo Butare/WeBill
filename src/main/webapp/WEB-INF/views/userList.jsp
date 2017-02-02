@@ -12,7 +12,18 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>User list</title>
     </head>
+    <style>
+        .right {
+            position: absolute;
+            right: 5px;
+            width: 90px;
+            border: 3px solid #73AD21;
+            padding: 5px;
+        }
+    </style>
     <body>
+        <p class="right"> <a href="logout">Logout</a> </p>
+
         <h1 align="center" >User List</h1>
         <c:if test="${not empty userList}"> 
             <table>
@@ -31,10 +42,10 @@
                     </c:forEach>
                 </tbody>
             </table>
-              
-              </c:if>
+
+        </c:if>
     <center>
         <a href="addUser"> Add new User </a>
     </center>
-    </body>
+</body>
 </html>
