@@ -29,7 +29,6 @@ import org.apache.sanselan.formats.tiff.TiffImageMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,6 +57,12 @@ public class FileController {
         ModelAndView modelView = null;
 
         if (ServletFileUpload.isMultipartContent(request)) {
+            
+            if (file.isEmpty()){
+                model.addAttribute("emptyUpload", "Select the image to upload, please!");
+                return null;
+            }
+                
 
             OutputStream outFile;
             InputStream fileContent;
@@ -76,16 +81,6 @@ public class FileController {
                 outFile.write(bytes, 0, read);
             }
 
-//            try { // please remember to remove this block !!!!!!!!!!!
-//
-//                if (jdbcDao.isQRCodeExist(QrReader.getQrCode(request, file.getOriginalFilename(), userID))) {
-//                    meterIDFound="THE QR CODE: " + QrReader.getQrCode(request, file.getOriginalFilename(), userID) +" Already in DB";
-//                }
-//            } catch (NotFoundException ex) {
-//                // when the image has no QR Code can't scan the gps coordinates
-//                System.out.println("QR CODE NOT FOUND");
-//                Logger.getLogger(FileController.class.getName()).log(Level.SEVERE, null, ex);
-//            }
             // add photo name to the session
             model.addAttribute("imageName", file.getOriginalFilename());
             model.addAttribute("userID", userID);
