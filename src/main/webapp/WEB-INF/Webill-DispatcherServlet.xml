@@ -59,5 +59,6 @@
     </bean>
     
     <mvc:annotation-driven/>
+    <mvc:resources mapping="/photos/**" location="/WEB-INF/photos/"/>
 
 </beans>
