@@ -52,7 +52,7 @@ public class UserController {
 
         jdbcDao.saveOrUpdate(user);
         jdbcDao.createUserTable(user.getUserID());
-        return "/userList";
+        return userListView(user, model);
     }
 
     @RequestMapping(value = "/userList", method = {RequestMethod.POST})
