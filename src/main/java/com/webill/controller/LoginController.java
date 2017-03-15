@@ -48,6 +48,8 @@ public class LoginController {
         User user = new User();
 
         model.addAttribute("userLogin", user);
+        
+        
         return "Login";
     }
 
@@ -153,7 +155,6 @@ public class LoginController {
         if (session != null) {
             session.invalidate();
         }
-
         return getLoginPage(model);
 
     }
