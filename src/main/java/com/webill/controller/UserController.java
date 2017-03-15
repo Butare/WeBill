@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -30,12 +31,10 @@ public class UserController {
 
     @Autowired
     LoginFormValidation loginFormValidation;
-    
-    //private static final Map<String, String> roleList = Constants.populateUserRole();
 
     @RequestMapping(value = "/addUser", method = RequestMethod.GET)
     public String getUserForm(@ModelAttribute("userForm") User user, Model model) {
-        
+
         model.addAttribute("roleList", Constants.populateUserRole());
         return "addUser";
     }
@@ -52,14 +51,27 @@ public class UserController {
 
         jdbcDao.saveOrUpdate(user);
         jdbcDao.createUserTable(user.getUserID());
+
+        model.addAttribute("userList", jdbcDao.getUserList());
         return userListView(user, model);
     }
 
     @RequestMapping(value = "/userList", method = {RequestMethod.POST})
     public String userListView(@ModelAttribute("userList") User user, Model model) {
-         
+
         model.addAttribute("roleList", Constants.populateUserRole());
         return "userList";
+    }
+
+    // for editing a user details in user table
+    @RequestMapping(value = "/editUser", method = RequestMethod.GET)
+    public String editUser(@ModelAttribute("userForm") User user, @RequestParam("userID") String userID, Model model) {
+        
+        System.out.println("The user ID IS "+userID);
+        //model.addAttribute("userDetail", jdbcDao.getUserById(userID));
+        
+        model.addAttribute("roleList", Constants.populateUserRole());
+        return "addUser";
     }
 
 }
