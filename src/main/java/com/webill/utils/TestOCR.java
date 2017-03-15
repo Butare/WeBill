@@ -6,24 +6,20 @@
 package com.webill.utils;
 
 import java.io.File;
-import net.sourceforge.tess4j.ITesseract;
-import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.TesseractException;
+import net.sourceforge.tess4j.*;
 
-/**
- *
- * @author JimmyHome
- */
 public class TestOCR {
+
     public static void main(String[] args) {
-        File imageFile = new File("/WEB-INF/photos/imageOCR.jpeg");
-        ITesseract instance = new Tesseract();
-        try{
-        String result = instance.doOCR(imageFile);
-        System.out.println("OCR READ IS :"+result);
-        }catch(TesseractException e) {
+        File imageFile = new File("/Users/JimmyHome/Desktop/imageOCR.jpeg");
+        ITesseract instance = new Tesseract();  // JNA Interface Mapping
+        // ITesseract instance = new Tesseract1(); // JNA Direct Mapping
+
+        try {
+            String result = instance.doOCR(imageFile);
+            System.out.println(result);
+        } catch (TesseractException e) {
             System.err.println(e.getMessage());
         }
     }
-    
 }
