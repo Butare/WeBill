@@ -1,12 +1,5 @@
-<%-- 
-    Document   : imageDetails
-    Created on : Jan 25, 2017, 5:23:32 PM
-    Author     : JimmyHome
---%>
+<%@include file="urlHeader.jsp" %>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
-<!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -32,7 +25,7 @@
             <table>
                 <thead>
                     <tr>
-                        <td>Month</td> <td>Meter Reading</td> <td>Consumption</td> <td>Image Name </td> <td>Bill file Name</td>
+                        <th>Month</th> <th>Meter Reading</th> <th>Consumption</th> <th>Image Name </th> <th>Bill file Name</th>
                     </tr>
                 </thead> 
                 <tbody>

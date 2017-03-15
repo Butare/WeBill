@@ -60,5 +60,6 @@
     
     <mvc:annotation-driven/>
     <mvc:resources mapping="/photos/**" location="/WEB-INF/photos/"/>
+    <mvc:resources mapping="/bootstrap/**" location="/WEB-INF/bootstrap/"/>
 
 </beans>
